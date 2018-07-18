@@ -40,9 +40,25 @@ export function connect(spark, action){
         })
         action.asyncDispatch(REGISTER_STATUS_CHANGE(statuses.PENDING))
         return spark.phone.register()
-        .then(ack => action.asyncDispatch(REGISTER_STATUS_CHANGE(statuses.DONE)))
+        .then(ack => {
+            return spark.rooms.list()
+            .then(rooms=>Promise.all(rooms.items.map(r=>
+                spark.memberships.list({
+                    roomId: r.id
+                })
+                .then(members=>{return {
+                    ...r,
+                    members: members.items
+                }})
+            )))
+            .then(rooms=>{
+                spark.rooms.myRooms = rooms
+                return action.asyncDispatch(REGISTER_STATUS_CHANGE(statuses.DONE))
+            })
+        })
         .catch(err => {
             action.asyncDispatch(REGISTER_STATUS_CHANGE({status: statuses.REJECTED, info: err}))
+            setTimeout(()=>alert('invalid token'), 5)
             return Promise.reject()
         })
     })

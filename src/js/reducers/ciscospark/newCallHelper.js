@@ -64,10 +64,10 @@ export default function newCallHelper(action, state){
 
     call.on('error', (err) => {
         console.log('error') 
-        state.callStatus.hangup && state.callStatus.hangup()
+        // state.callStatus.hangup && state.callStatus.hangup()
         alert(err)
         console.error(err)
-        reset(action, err.message)
+        // reset(action, err.message)
     })
     
     call.on('change:localMediaStream', (call) => {
@@ -146,7 +146,7 @@ export default function newCallHelper(action, state){
     })
 
     call.on('change:status', (call) => {
-        console.log('change:status')
+        console.warn('Meeting State Changed')
         action.asyncDispatch(CALL_STATUS_CHANGED({
             status: call.status
         }))
@@ -156,7 +156,7 @@ export default function newCallHelper(action, state){
     })
 
     call.on('membership:change', (memberships)=>{
-        console.log('membership:change')
+        console.warn('membership:change - Joined/Left ')
         Promise.all(memberships.collection.models
             .filter(model=>model._values)
             .filter(model=>model.state === "connected")

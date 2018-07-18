@@ -7,7 +7,7 @@ import Cookies from 'universal-cookie'
 import actionTypes from "../actions/types"
 import actionFactory from "../actions/actionFactory"
 import statuses from "../lib/statuses"
-import Dashboard from "./Dashboard"
+import Dashboard from "./Dashboard/index"
 import SignIn from "./SignIn"
 
 const cookies = new Cookies()
@@ -34,7 +34,9 @@ export default class Layout extends React.Component {
           signIn={this.props.actions.newAccesToken.bind(this)}/>
       }
       case statuses.PENDING: {
-        return <MoonLoader color={"grey"} />
+        return <div style={{width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+          <MoonLoader color={'rgb(0, 195, 255)'} />
+        </div>
       }
       case statuses.DONE: {
         return <Dashboard 
